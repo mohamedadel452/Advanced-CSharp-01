@@ -39,7 +39,7 @@ namespace OOP06_Generics
     ------------------------------------------------------------------------------------------------------------------------
     - Explanation:
       Because not all types can be compared with the '>' operator, T must be constrained to implement IComparable<T>.
-    - Implemented in GenericUtilities.cs (demonstrated in Main).
+    - Implemented in GenericUtilities.cs 
     ========================================================================================================================
      Q6: What is a generic interface? Write IRepository<T>.
     ------------------------------------------------------------------------------------------------------------------------
@@ -49,7 +49,14 @@ namespace OOP06_Generics
     - Implemented in IRepository.cs .
 
     ========================================================================================================================
+    Q7: What is the 'struct' constraint? Write an example.
+    ------------------------------------------------------------------------------------------------------------------------
+    - Explanation:
+      'where T : struct' enforces that T must be a non-nullable Value Type (int, double, custom struct).
+      Guarantees stack allocation when used locally, eliminates null references, and prevents passing reference types.
+    - Implemented in StructConstraintExample.cs 
 
+    ========================================================================================================================
     */
     #endregion
 
