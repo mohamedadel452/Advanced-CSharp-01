@@ -127,6 +127,17 @@ namespace OOP06_Generics
     - Implemented in VarianceExamples.cs .
 
     ========================================================================================================================
+    Q17: What is the difference between covariance and contravariance?
+    ------------------------------------------------------------------------------------------------------------------------
+    - Feature            Covariance (out)                       Contravariance (in)
+    - Direction          Derived to Base (Dog -> Animal)        Base to Derived (Animal -> Dog)
+    - Position           Return types (Output / Producer)       Parameters (Input / Consumer)
+    - Typical BCL Use    IEnumerable<out T>, Func<out TResult>  IComparer<in T>, Action<in T>
+    - Purpose            Preserves polymorphism for reading     Extends handlers to specific types
+
+    ========================================================================================================================
+
+
     */
     #endregion
 
