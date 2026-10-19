@@ -72,7 +72,13 @@ namespace OOP06_Generics
       When multiple constraints are applied, 'new()' must always be placed LAST.
     - Implemented in NewConstraintExample.cs .
     ========================================================================================================================
-    
+    Q10: What is the interface constraint? Write an example.
+    ------------------------------------------------------------------------------------------------------------------------
+    - Explanation:
+      'where T : ISomeInterface' ensures that type T implements the designated interface.
+      Allows direct invocation of interface members on generic instances without runtime casting.
+    - Implemented in InterfaceConstraintExample.cs 
+    ========================================================================================================================
     */
     #endregion
 
