@@ -20,6 +20,13 @@ namespace OOP06_Generics
          implementation because all object references are identical pointer sizes (4 or 8 bytes).
 
     ========================================================================================================================
+    Q3: What are multiple type parameters? Write Pair<TKey, TValue>.
+    ------------------------------------------------------------------------------------------------------------------------
+    - What are Multiple Type Parameters:
+      Generic types can accept more than one type argument (e.g., class Pair<TKey, TValue> or Dictionary<TKey, TValue>).
+      Each type parameter operates independently, enabling relationships between distinct types while preserving strong typing.
+    - Implemented in Pair.cs (demonstrated in Main).
+    - Multiple type parameters let you define a generic type or method whose different parts can independently work with different types.
 
 
     
