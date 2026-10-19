@@ -145,6 +145,16 @@ namespace OOP06_Generics
     
 
     ========================================================================================================================
+    Q19: How can you inherit from a generic class?
+    ------------------------------------------------------------------------------------------------------------------------
+    - Explanation:
+      1. Closed Generic: class StringList : List<string> (closes type parameter).
+      2. Open Generic: class MyList<T> : List<T> (passes type parameter).
+      3. Constrained Generic: class SortedList<T> : List<T> where T : IComparable<T> (adds constraints).
+      4. Expanded Generic: class DictionaryList<TKey, TValue> : List<TValue> (adds new type parameters).
+    
+
+    ========================================================================================================================
 
 
 
