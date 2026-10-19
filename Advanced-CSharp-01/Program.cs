@@ -35,7 +35,12 @@ namespace OOP06_Generics
       The C# compiler supports Type Inference, allowing the caller to omit <T> when arguments clearly define it.
     - Implemented in GenericUtilities.cs (demonstrated in Main).
     ========================================================================================================================
-    
+     Q5: Write a generic method FindMax<T> that finds maximum value.
+    ------------------------------------------------------------------------------------------------------------------------
+    - Explanation:
+      Because not all types can be compared with the '>' operator, T must be constrained to implement IComparable<T>.
+    - Implemented in GenericUtilities.cs (demonstrated in Main).
+    ========================================================================================================================
 
     */
     #endregion
