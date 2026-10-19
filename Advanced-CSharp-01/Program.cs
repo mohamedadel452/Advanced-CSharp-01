@@ -153,9 +153,11 @@ namespace OOP06_Generics
       3. Constrained Generic: class SortedList<T> : List<T> where T : IComparable<T> (adds constraints).
       4. Expanded Generic: class DictionaryList<TKey, TValue> : List<TValue> (adds new type parameters).
     
-
     ========================================================================================================================
-
+     Q20: Complete Exercise - Create a generic Cache<TKey, TValue> with Add, Get, Remove, Contains, and expiration support.
+    ------------------------------------------------------------------------------------------------------------------------
+    - Implemented in CacheItem.cs and Cache.cs (fully demonstrated in Main).
+    ========================================================================================================================
 
 
     */
