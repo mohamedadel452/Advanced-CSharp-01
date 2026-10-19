@@ -136,6 +136,16 @@ namespace OOP06_Generics
     - Purpose            Preserves polymorphism for reading     Extends handlers to specific types
 
     ========================================================================================================================
+     Q18: How do static members work in generic types?
+    ------------------------------------------------------------------------------------------------------------------------
+    - Explanation:
+      In .NET, each distinct closed generic type (e.g., GenericCounter<int> vs GenericCounter<string>) is treated as a 
+      separate Type Object by the CLR. Each has its own independent static fields and static constructors.
+      Modifying a static member in GenericCounter<int> has ZERO effect on GenericCounter<string>.
+    
+
+    ========================================================================================================================
+
 
 
     */
