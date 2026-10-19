@@ -108,7 +108,15 @@ namespace OOP06_Generics
       - Bitwise all-zero initialized struct for custom Value Types.
 
     ========================================================================================================================
-
+    Q15: What is covariance? Explain the 'out' keyword.
+    ------------------------------------------------------------------------------------------------------------------------
+    - Explanation:
+      Covariance enables assigning a generic interface of a more derived type to a generic interface of a less derived type:
+      IProducer<Dog> -> IProducer<Animal>.
+      The 'out' keyword marks T as output-only (method return positions).
+      Applies ONLY to reference types due to binary pointer compatibility in the CLR.
+    - Implemented in VarianceExamples.cs .
+    ========================================================================================================================
 
     */
     #endregion
