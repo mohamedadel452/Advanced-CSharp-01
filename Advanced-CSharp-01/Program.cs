@@ -79,6 +79,13 @@ namespace OOP06_Generics
       Allows direct invocation of interface members on generic instances without runtime casting.
     - Implemented in InterfaceConstraintExample.cs 
     ========================================================================================================================
+     Q11: What is the base class constraint? Write an example.
+    ------------------------------------------------------------------------------------------------------------------------
+    - Explanation:
+      'where T : BaseClass' enforces that T is either the specified base class or derives from it.
+      Exposes all public and protected base members to the generic class at compile time.
+    - Implemented in BaseClassConstraintExample.cs .
+    ========================================================================================================================
     */
     #endregion
 
