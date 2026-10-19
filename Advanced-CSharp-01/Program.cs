@@ -57,6 +57,15 @@ namespace OOP06_Generics
     - Implemented in StructConstraintExample.cs 
 
     ========================================================================================================================
+     Q8: What is the 'class' constraint? Write an example.
+    ------------------------------------------------------------------------------------------------------------------------
+    - Explanation:
+      'where T : class' enforces that T must be a Reference Type (class, interface, delegate, or array).
+      Guarantees that T can be checked against null (item == null) and allows reference identity comparison.
+    - Implemented in ClassConstraintExample.cs 
+    ========================================================================================================================
+
+    
     */
     #endregion
 
