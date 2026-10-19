@@ -86,6 +86,18 @@ namespace OOP06_Generics
       Exposes all public and protected base members to the generic class at compile time.
     - Implemented in BaseClassConstraintExample.cs .
     ========================================================================================================================
+    Q12: How do you apply multiple constraints? Write an example.
+    ------------------------------------------------------------------------------------------------------------------------
+    - Explanation:
+      Multiple constraints are chained with commas: 'where T : class, IComparable<T>, IPrintable, new()'.
+      Precedence rule:
+      1. Primary Constraint: 'class', 'struct', or a Base Class (at most one, MUST be first).
+      2. Secondary Constraints: Interfaces (zero or more).
+      3. Constructor Constraint: 'new()' (MUST be last).
+    - Implemented in MultipleConstraintsExample.cs .
+
+    ========================================================================================================================
+
     */
     #endregion
 
