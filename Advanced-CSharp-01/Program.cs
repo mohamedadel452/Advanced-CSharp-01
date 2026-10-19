@@ -117,7 +117,16 @@ namespace OOP06_Generics
       Applies ONLY to reference types due to binary pointer compatibility in the CLR.
     - Implemented in VarianceExamples.cs .
     ========================================================================================================================
+    Q16: What is contravariance? Explain the 'in' keyword.
+    ------------------------------------------------------------------------------------------------------------------------
+    - Explanation:
+      Contravariance reverses assignment compatibility:
+      IConsumer<Animal> -> IConsumer<Dog>.
+      The 'in' keyword marks T as input-only (method parameter positions).
+      A consumer capable of handling any Animal can safely handle a Dog.
+    - Implemented in VarianceExamples.cs .
 
+    ========================================================================================================================
     */
     #endregion
 

@@ -34,5 +34,26 @@ namespace OOP06_Generics
     }
     #endregion
 
+    #region Q16: Contravariance (in T) - Consumer Pattern
+    /// <summary>
+    /// Contravariant interface (Q16).
+    /// 'in' keyword specifies that T is only passed in (consumed) as arguments.
+    /// Enables assigning base generic to derived generic:
+    /// IConsumer<Animal> can be assigned to IConsumer<Dog>.
+    /// </summary>
+    public interface IConsumer<in T>
+    {
+        void Consume(T item);
+    }
+
+    public class AnimalFeeder : IConsumer<Animal>
+    {
+        public void Consume(Animal item)
+        {
+            Console.WriteLine($"Feeding food to {item.Name}...");
+            item.Speak();
+        }
+    }
+    #endregion
 
 }
