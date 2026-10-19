@@ -64,8 +64,14 @@ namespace OOP06_Generics
       Guarantees that T can be checked against null (item == null) and allows reference identity comparison.
     - Implemented in ClassConstraintExample.cs 
     ========================================================================================================================
-
-
+     Q9: What is the 'new()' constraint? Write an example.
+    ------------------------------------------------------------------------------------------------------------------------
+    - Explanation:
+      'where T : new()' enforces that T must have a public parameterless constructor.
+      Allows calling 'new T()' directly inside the generic class without slow reflection.
+      When multiple constraints are applied, 'new()' must always be placed LAST.
+    - Implemented in NewConstraintExample.cs .
+    ========================================================================================================================
     
     */
     #endregion
