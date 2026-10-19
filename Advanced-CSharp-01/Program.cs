@@ -41,6 +41,14 @@ namespace OOP06_Generics
       Because not all types can be compared with the '>' operator, T must be constrained to implement IComparable<T>.
     - Implemented in GenericUtilities.cs (demonstrated in Main).
     ========================================================================================================================
+     Q6: What is a generic interface? Write IRepository<T>.
+    ------------------------------------------------------------------------------------------------------------------------
+    - What is a Generic Interface:
+      An interface with type parameters (e.g., IRepository<T>, IEnumerable<T>). 
+      It defines a strongly-typed contract that classes can implement without forcing casting or boxing.
+    - Implemented in IRepository.cs .
+
+    ========================================================================================================================
 
     */
     #endregion
