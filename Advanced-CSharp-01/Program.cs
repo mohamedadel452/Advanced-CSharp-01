@@ -25,11 +25,18 @@ namespace OOP06_Generics
     - What are Multiple Type Parameters:
       Generic types can accept more than one type argument (e.g., class Pair<TKey, TValue> or Dictionary<TKey, TValue>).
       Each type parameter operates independently, enabling relationships between distinct types while preserving strong typing.
-    - Implemented in Pair.cs (demonstrated in Main).
     - Multiple type parameters let you define a generic type or method whose different parts can independently work with different types.
-
-
+    ========================================================================================================================
+    Q4: What is a generic method? Write Swap<T> method.
+    ------------------------------------------------------------------------------------------------------------------------
+    - What is a Generic Method:
+      A method that introduces its own type parameter (e.g., void Swap<T>(ref T a, ref T b)). 
+      Generic methods can exist inside either generic or non-generic classes.
+      The C# compiler supports Type Inference, allowing the caller to omit <T> when arguments clearly define it.
+    - Implemented in GenericUtilities.cs (demonstrated in Main).
+    ========================================================================================================================
     
+
     */
     #endregion
 
