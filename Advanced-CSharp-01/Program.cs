@@ -169,8 +169,134 @@ namespace OOP06_Generics
     {
         static void Main(string[] args)
         {
+        
             Console.WriteLine(" GENERICS MASTER ASSIGNMENT");
+            #region Q2: Generic Container<T> Demo
+            Console.WriteLine("Q2: Generic Container<T> Demonstration");
+            var intContainer = new Container<int>();
+            intContainer.Add(10);
+            intContainer.Add(20);
+            intContainer.Add(30);
+            Console.WriteLine($"Container<int> Count: {intContainer.Count}, Element at index 1: {intContainer.Get(1)}");
 
+            var stringContainer = new Container<string>();
+            stringContainer.Add("C# Generics");
+            stringContainer.Add("Type Safety");
+            Console.WriteLine($"Container<string> Count: {stringContainer.Count}, Element at index 0: {stringContainer.Get(0)}");
+            #endregion
+
+            #region Q3: Pair<TKey, TValue> Demo
+            Console.WriteLine("Q3: Multiple Type Parameters Pair<TKey, TValue>");
+            var userPair = new Pair<int, string>(101, "Mohamed Adel");
+            Console.WriteLine($"Created Pair: {userPair}");
+            var (id, name) = userPair;
+            Console.WriteLine($"Deconstructed: ID={id}, Name={name}");
+            #endregion
+
+            #region Q4: Swap<T> Generic Method Demo
+            Console.WriteLine("Q4: Generic Method Swap<T>");
+            int x = 5, y = 99;
+            Console.WriteLine($"Before Swap: x={x}, y={y}");
+            GenericUtilities.Swap(ref x, ref y);
+            Console.WriteLine($"After Swap : x={x}, y={y}");
+
+            string strA = "First", strB = "Second";
+            Console.WriteLine($"Before Swap: strA='{strA}', strB='{strB}'");
+            GenericUtilities.Swap(ref strA, ref strB);
+            Console.WriteLine($"After Swap : strA='{strA}', strB='{strB}'");
+            #endregion
+
+            #region Q5: FindMax<T> Generic Method Demo
+            Console.WriteLine("Q5: Generic Method FindMax<T>");
+            int maxInt = GenericUtilities.FindMax(45, 120);
+            Console.WriteLine($"FindMax(45, 120) => {maxInt}");
+
+            string maxStr = GenericUtilities.FindMax("Apple", "Zebra");
+            Console.WriteLine($"FindMax('Apple', 'Zebra') => {maxStr}");
+
+            int[] numbers = { 12, 89, 45, 230, 7 };
+            Console.WriteLine($"FindMax across array: {GenericUtilities.FindMax(numbers)}");
+            #endregion
+
+
+
+            #region Q7: struct Constraint Demo
+            Console.WriteLine("Q7: 'where T : struct' Value Type Constraint");
+            var structBox = new ValueTypeBox<int>(500);
+            Console.WriteLine(structBox);
+            structBox.Reset();
+            Console.WriteLine($"After Reset: {structBox}");
+            #endregion
+
+            #region Q8: class Constraint Demo
+            Console.WriteLine("Q8: 'where T : class' Reference Type Constraint");
+            var refHolder = new ReferenceHolder<string>("Active Reference");
+            Console.WriteLine(refHolder);
+            refHolder.Clear();
+            Console.WriteLine(refHolder);
+            #endregion
+
+            #region Q9: new() Constraint Demo
+            Console.WriteLine("Q9: 'where T : new()' Parameterless Constructor Constraint");
+            var factory = new EntityFactory<Product>();
+            Product newProduct = factory.CreateInstance();
+            Console.WriteLine($"Factory Instantiated: {newProduct.Name} with Price: {newProduct.Price}");
+            #endregion
+
+            #region Q10: Interface Constraint Demo
+            Console.WriteLine("Q10: 'where T : IPrintable' Interface Constraint");
+            var reportPrinter = new ReportPrinter<Product>();
+            reportPrinter.Add(new Product("Mechanical Keyboard", 150m));
+            reportPrinter.Add(new Product("Gaming Mouse", 80m));
+            reportPrinter.PrintAll();
+            #endregion
+
+           
+            #region Q12: Multiple Constraints Demo
+            Console.WriteLine("Q12: Multiple Constraints (class, IComparable<T>, IPrintable, new())");
+            var multiProcessor = new DataProcessor<Product>();
+            Product autoCreated = multiProcessor.CreateAndDisplay();
+            var p1 = new Product("Laptop", 1200m);
+            var p2 = new Product("Monitor", 300m);
+            int compResult = multiProcessor.CompareItems(p1, p2);
+            Console.WriteLine($"Comparison between Laptop and Monitor: {compResult} (p1 > p2)");
+            #endregion
+
+            #region Q13 & Q14: SafeList<T> & 'default' Keyword Demo
+            Console.WriteLine("Q13 & Q14: SafeList<T> & 'default' Keyword Demonstration");
+            var safeNumbers = new SafeList<int>();
+            safeNumbers.Add(100);
+            safeNumbers.Add(200);
+
+            Console.WriteLine($"safeNumbers[0] => {safeNumbers[0]}");
+            Console.WriteLine($"safeNumbers[5] (Invalid Index) => {safeNumbers[5]} (default of int is 0, no exception!)");
+
+            var safeStrings = new SafeList<string>();
+            safeStrings.Add("First Item");
+            Console.WriteLine($"safeStrings[99] (Invalid Index) => {(safeStrings[99] == null ? "null" : safeStrings[99])}");
+            #endregion
+
+            #region Q15 & Q16 & Q17: Variance Demo (Covariance & Contravariance)
+            Console.WriteLine("Q15 & Q16: Variance (Covariance out vs Contravariance in)");
+
+            // Covariance: IProducer<Dog> assigned to IProducer<Animal>
+            IProducer<Dog> dogShelter = new DogShelter();
+            IProducer<Animal> animalShelter = dogShelter; // Valid due to 'out T'
+            Animal adoptedAnimal = animalShelter.Produce();
+            Console.Write("Covariant Producer produced: ");
+            adoptedAnimal.Speak();
+
+            // Contravariance: IConsumer<Animal> assigned to IConsumer<Dog>
+            IConsumer<Animal> generalFeeder = new AnimalFeeder();
+            IConsumer<Dog> dogFeeder = generalFeeder; // Valid due to 'in T'
+            Console.Write("Contravariant Consumer fed Dog: ");
+            dogFeeder.Consume(new Dog());
+            #endregion
+
+    
+
+
+            Console.WriteLine("ALL 20 GENERICS QUESTIONS & EXERCISES COMPLETED SUCCESSFULLY!");
 
         }
     }
