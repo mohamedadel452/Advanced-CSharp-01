@@ -97,6 +97,18 @@ namespace OOP06_Generics
     - Implemented in MultipleConstraintsExample.cs .
 
     ========================================================================================================================
+      Q13: What does the 'default' keyword do in generics?
+    ------------------------------------------------------------------------------------------------------------------------
+    - Explanation:
+      In generic code, you cannot assign 0 (if T is string) or null (if T is int).
+      'default' or 'default(T)' returns the type-safe default value:
+      - null for Reference Types.
+      - 0 for numeric Value Types.
+      - false for Boolean.
+      - Bitwise all-zero initialized struct for custom Value Types.
+
+    ========================================================================================================================
+
 
     */
     #endregion
