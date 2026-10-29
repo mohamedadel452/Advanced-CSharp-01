@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace OOP06_Generics
+namespace Advanced_CSharp_01
 {
     #region GenericUtilities Static Class
     /// <summary>

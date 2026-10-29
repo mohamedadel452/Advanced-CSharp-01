@@ -1,10 +1,23 @@
 using System;
 
-namespace OOP06_Generics
+namespace Advanced_CSharp_01
 {
-    #region Q12: Multiple Constraints
+    #region Base Class for Multiple Type Parameters Model
+    public abstract class BaseEntity
+    {
+        public int Id { get; set; }
+    }
+
+    public class AuditLog : BaseEntity
+    {
+        public DateTime Timestamp { get; set; } = DateTime.UtcNow;
+    }
+    #endregion
+
+    #region Q12: Multiple Constraints (Single Type Parameter)
     /// <summary>
     /// Demonstrates applying multiple constraints to a single type parameter (Q12).
+    /// Applies: class, IComparable<T>, IPrintable, and new().
     /// Strict C# Ordering Rules:
     /// 1. Primary constraint: 'class' (or base class) must come FIRST.
     /// 2. Secondary constraints: interfaces (IComparable<T>, IPrintable) in the middle.
@@ -18,12 +31,8 @@ namespace OOP06_Generics
         /// </summary>
         public T CreateAndDisplay()
         {
-            // 'new()' allows instantiation
             T item = new T();
-
-            // 'IPrintable' allows calling PrintDetails
             item.PrintDetails();
-
             return item;
         }
 
@@ -40,6 +49,34 @@ namespace OOP06_Generics
         }
         #endregion
     }
+    #endregion
+
+    #region Q12: Multiple Constraints (Multiple Type Parameters - Model Solution)
+    /// <summary>
+    /// Model Solution architecture for Task 12:
+    /// Uses multiple type parameters (TEntity, TItem) with where clauses combining:
+    /// - Base class constraint: where TEntity : BaseEntity, new()
+    /// - Reference type constraint: where TItem : class, IComparable<TItem>, IPrintable, new()
+    /// </summary>
+    public class DataProcessor<TEntity, TItem>
+        where TEntity : BaseEntity, new()
+        where TItem : class, IComparable<TItem>, IPrintable, new()
+    {
+        #region Methods
+        public TEntity CreateEntity()
+        {
+            return new TEntity();
+        }
+
+        public TItem CreateItem()
+        {
+            TItem item = new TItem();
+            item.PrintDetails();
+            return item;
+        }
+        #endregion
+    }
+    #endregion
 
     #region Sample Model Satisfying Multiple Constraints
     public class Product : IComparable<Product>, IPrintable
@@ -47,7 +84,6 @@ namespace OOP06_Generics
         public string Name { get; set; } = "Default Product";
         public decimal Price { get; set; } = 100m;
 
-        // Satisfies 'new()' constraint:
         public Product() { }
 
         public Product(string name, decimal price)
@@ -56,19 +92,16 @@ namespace OOP06_Generics
             Price = price;
         }
 
-        // Satisfies 'IComparable<Product>':
         public int CompareTo(Product? other)
         {
             if (other == null) return 1;
             return Price.CompareTo(other.Price);
         }
 
-        // Satisfies 'IPrintable':
         public void PrintDetails()
         {
             Console.WriteLine($"Product: {Name} | Price: {Price:C}");
         }
     }
-    #endregion
     #endregion
 }

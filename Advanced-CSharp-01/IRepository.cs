@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace OOP06_Generics
+namespace Advanced_CSharp_01
 {
  
     #region IRepository<T> Generic Interface

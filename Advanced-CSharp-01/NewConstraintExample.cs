@@ -1,6 +1,6 @@
 using System;
 
-namespace OOP06_Generics
+namespace Advanced_CSharp_01
 {
     #region Q9: new() Constraint (Parameterless Constructor Constraint)
     /// <summary>

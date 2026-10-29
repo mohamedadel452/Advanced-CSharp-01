@@ -1,6 +1,6 @@
-﻿
 
-namespace OOP06_Generics
+
+namespace Advanced_CSharp_01
 {
     #region PART 01: THEORETICAL QUESTIONS (Q1 - Q20)
     /*

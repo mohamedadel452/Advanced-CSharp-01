@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace OOP06_Generics
+namespace Advanced_CSharp_01
 {
     #region Q13 & Q14: SafeList<T> Class & 'default' Keyword
     /// <summary>
