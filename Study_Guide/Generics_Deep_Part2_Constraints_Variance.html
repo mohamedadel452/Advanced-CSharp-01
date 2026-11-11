@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Generics (2/3): Constraints و Variance و Inheritance</title>
+<style>
+:root{--bg:#f6f7f4;--fg:#1d2327;--mut:#5b6670;--card:#fff;--line:#d9ded8;--acc:#0b6b5c;--warn:#a4440f;--warnbg:#fdf0e6;--code:#10201c;--codefg:#d7efe6;--okbg:#e6f4ef}
+@media(prefers-color-scheme:dark){:root{--bg:#121816;--fg:#e4ebe8;--mut:#9aa8a3;--card:#1a2320;--line:#2c3834;--acc:#4fc2a8;--warn:#f0a066;--warnbg:#2b2118;--code:#0b1210;--okbg:#17302a}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:17px/1.9 "Segoe UI",Tahoma,"Noto Naskh Arabic",system-ui,sans-serif;padding:env(safe-area-inset-top,0) 0 env(safe-area-inset-bottom,0)}
+main{max-width:900px;margin:0 auto;padding:28px 18px 80px}
+h1{font-size:1.9rem;line-height:1.4;margin:.2em 0}
+h2{font-size:1.4rem;margin:2.2em 0 .5em;padding-inline-start:12px;border-inline-start:5px solid var(--acc)}
+h3{font-size:1.05rem;margin:1.5em 0 .2em;color:var(--acc)}
+p{margin:.55em 0}.lead{color:var(--mut)}
+nav{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}
+nav a{color:var(--fg);text-decoration:none;border:1px solid var(--line);background:var(--card);padding:3px 12px;border-radius:6px;font-size:.88rem}
+pre{direction:ltr;text-align:left;background:var(--code);color:var(--codefg);padding:13px 16px;border-radius:8px;overflow-x:auto;font:13.5px/1.55 Consolas,Menlo,monospace;margin:.6em 0}
+code{direction:ltr;unicode-bidi:embed;font-family:Consolas,Menlo,monospace;font-size:.9em;background:var(--okbg);padding:1px 6px;border-radius:4px}
+pre code{background:none;padding:0;font-size:inherit}
+.box{border:1px solid var(--line);background:var(--card);border-radius:8px;padding:4px 16px;margin:1em 0}
+.warn{background:var(--warnbg);border-color:var(--warn)}.warn .t{color:var(--warn)}
+.tw{overflow-x:auto;margin:1em 0}
+table{border-collapse:collapse;width:100%;min-width:540px;background:var(--card)}
+th,td{border:1px solid var(--line);padding:7px 12px;text-align:start;vertical-align:top;font-size:.93rem}
+th{background:var(--okbg)}
+.dg{direction:ltr;overflow-x:auto;background:var(--card);border:1px solid var(--line);border-radius:8px;padding:8px;margin:.8em 0}
+.dg svg{min-width:700px;width:100%;height:auto;display:block}
+.bx{fill:var(--card);stroke:var(--acc);stroke-width:1.5}
+.hd{font:700 12.5px Consolas,Menlo,monospace;fill:var(--acc)}.tx{font:11.5px Consolas,Menlo,monospace;fill:var(--fg)}
+.ln{stroke:var(--fg);stroke-width:1.5;fill:none}.ds{stroke-dasharray:5 3}.mk{fill:var(--card);stroke:var(--fg)}.op{fill:none;stroke:var(--fg)}
+.bad{stroke:var(--warn);fill:none;stroke-width:2}.badt{font:700 13px Consolas,monospace;fill:var(--warn)}
+li{margin:.25em 0}
+footer{margin-top:3em;color:var(--mut);font-size:.9rem}
+</style>
+</head>
+<body>
+<main>
+<h1>Generics (الجزء 2 من 3): Constraints و Variance و Inheritance</h1>
+<p class="lead">سلايدات 16 إلى 33 من Session 01 Generics. ده الجزء اللي بيفرّق بين مبرمج بيستخدم الـ generics ومبرمج بيصمم بيها.</p>
+<nav><a href="#a">1. ليه Constraints</a><a href="#b">2. الأنواع</a><a href="#c">3. الدمج والقواعد</a><a href="#d">4. مشاكل Constraints</a><a href="#e">5. Variance</a><a href="#f">6. Inheritance</a></nav>
+
+<h2 id="a">1) ليه محتاجين Constraints؟ (سلايد 16 و 17)</h2>
+<p>جوه <code>Box&lt;T&gt;</code> الـ compiler مش عارف حاجة عن <code>T</code> غير إنها <code>object</code>. فمينفعش تنادي <code>item.Print()</code>. والـ compiler لازم يتأكد وقت الـ compile، مش وقت التشغيل (عكس <code>dynamic</code> أو Reflection). الحل: <b>constraint</b> هو "وعد" بإن T لها شكل معين، والـ compiler يتحقق منه عند كل استخدام.</p>
+<pre><code>public class Printer&lt;T&gt; where T : IPrintable
+{
+    public void Print(T item) =&gt; item.Print();   // ينفع لأن T مضمون إنها IPrintable
+}
+// new Printer&lt;string&gt;();    // خطأ compile: string مش IPrintable</code></pre>
+<p>الـ constraint بيعمل 3 حاجات: يفتح لك أعضاء النوع، يمنع الاستخدام الغلط، ويساعد الـ JIT يولّد كود أسرع.</p>
+
+<h2 id="b">2) الأنواع بالتفصيل (سلايد 18 إلى 24)</h2>
+<div class="tw"><table>
+<tr><th>القيد</th><th>معناه</th><th>يقبل</th><th>يرفض</th></tr>
+<tr><td><code>where T : class</code></td><td>reference type</td><td>classes، string، arrays، interfaces، delegates</td><td>int، struct، <code>int?</code></td></tr>
+<tr><td><code>where T : struct</code></td><td>value type غير nullable</td><td>int، double، bool، DateTime، structs</td><td>string، classes، <code>Nullable&lt;T&gt;</code></td></tr>
+<tr><td><code>where T : new()</code></td><td>constructor عام بدون parameters</td><td>structs و classes بـ default ctor</td><td>string، arrays، interfaces، abstract، class ctor بـ parameters فقط</td></tr>
+<tr><td><code>where T : BaseClass</code></td><td>يرث من class</td><td>الـ class وأبنائه</td><td>أي نوع تاني</td></tr>
+<tr><td><code>where T : IFace</code></td><td>ينفذ interface</td><td>classes و structs اللي تنفذه</td><td>غير المنفذين</td></tr>
+<tr><td><code>where T : notnull</code></td><td>مش nullable</td><td>non-nullable فقط</td><td><code>string?</code>، <code>int?</code> (تحذير)</td></tr>
+<tr><td><code>where T : unmanaged</code></td><td>struct بدون references</td><td>int، double، struct من أرقام</td><td>string، struct فيه array</td></tr>
+</table></div>
+<pre><code>public class Box&lt;T&gt; where T : struct { public T Value { get; set; } }
+var ok = new Box&lt;int&gt;();  var ok2 = new Box&lt;DateTime&gt;();
+// new Box&lt;string&gt;();   // CS0453   new Box&lt;int?&gt;();   // CS0453
+
+public class Repo&lt;T&gt; where T : class { public void Add(T item) { if (item == null) throw new ArgumentNullException(nameof(item)); } }
+
+public class Factory&lt;T&gt; where T : new() { public T Create() =&gt; new T(); }
+var f = new Factory&lt;List&lt;int&gt;&gt;().Create();
+// new Factory&lt;string&gt;()   // خطأ: string ملهاش constructor بدون parameters</code></pre>
+<p><b>ليه <code>struct</code> يقبل <code>new()</code> دايماً؟</b> لأن أي struct ليه default ctor ضمني (<code>default</code>). و<code>new T()</code> على struct بتعطي قيمة صفرية.</p>
+<p><b>ليه <code>int?</code> مرفوضة من <code>struct</code>؟</b> لأن <code>Nullable&lt;T&gt;</code> struct فعلاً لكن اتعمل له استثناء في القيد، لأن المقصود غالباً "قيمة غير nullable"، و<code>T?</code> تكون له معنى مختلف جوه الكود.</p>
+
+<h2 id="c">3) الدمج والترتيب (سلايد 23 و 24)</h2>
+<pre><code>where T : BaseEntity, IAuditable, new()      // ترتيب إجباري</code></pre>
+<ol>
+<li>أول واحد: <code>class</code> أو <code>struct</code> أو <code>BaseClass</code> أو <code>notnull</code> أو <code>unmanaged</code> (واحد بس منهم).</li>
+<li>بعده: أي عدد من الـ interfaces.</li>
+<li>آخر واحد: <code>new()</code>.</li>
+</ol>
+<div class="tw"><table>
+<tr><th>تركيبة مرفوضة</th><th>السبب</th></tr>
+<tr><td><code>class, struct</code></td><td>متناقضتين</td></tr>
+<tr><td><code>struct, new()</code></td><td>CS0451: struct أصلاً ليها default ctor، فمتكررة</td></tr>
+<tr><td><code>BaseA, BaseB</code></td><td>الـ class واحد بس (مفيش وراثة متعددة)</td></tr>
+<tr><td><code>new(), IFace</code></td><td>الـ <code>new()</code> لازم آخر واحد</td></tr>
+</table></div>
+<p>لما فيه أكتر من type parameter كل واحد له <code>where</code> خاص: <code>where TEntity : class, IEntity where TId : notnull</code>.</p>
+
+<h2 id="d">4) مشاكل Constraints الحقيقية</h2>
+<div class="box warn"><p><b class="t">1) لازم تكرر الـ constraints في الـ derived:</b></p>
+<pre><code>class Base&lt;T&gt; where T : class { }
+class Derived&lt;T&gt; : Base&lt;T&gt; { }                 // CS0452: T لازم تكون reference type
+class Derived2&lt;T&gt; : Base&lt;T&gt; where T : class { }   // الصح (أو أقوى)</code></pre>
+<p>الـ compiler مش بيورّث القيود تلقائياً لأنها جزء من توقيع النوع، فلازم تذكرها صراحة (ومسموح تزيد عليها).</p></div>
+<div class="box warn"><p><b class="t">2) <code>new()</code> بتتعارض مع الـ DI:</b> الـ <code>new T()</code> بتنشئ object من غير ما تحقن dependencies، فلو الـ class محتاجة <code>ILogger</code> مش هتشتغل. للخدمات استخدم <code>IServiceProvider</code> أو factory delegate (<code>Func&lt;T&gt;</code>). والـ <code>new()</code> مناسبة للـ DTOs و entities البسيطة.</p></div>
+<div class="box warn"><p><b class="t">3) القيد بالـ interface بيمنع Boxing، والـ parameter بـ interface بيعمله:</b></p>
+<pre><code>static int Cmp1&lt;T&gt;(T a, T b) where T : IComparable&lt;T&gt; =&gt; a.CompareTo(b);   // بدون boxing للـ struct
+static int Cmp2(IComparable&lt;int&gt; a, int b)             =&gt; a.CompareTo(b);   // الـ int بيتحول لـ interface (boxing)</code></pre>
+<p>الـ JIT بيعمل "constrained call" في الأولى ويولّد كود مخصص لكل struct فمفيش allocation.</p></div>
+<div class="box warn"><p><b class="t">4) constraints بـ class محددة بتربطك:</b> <code>where T : BaseEntity</code> بتخليك ما تقدرش تستخدم الكود مع أي نوع مش وارث. فضّل interface (<code>where T : IEntity</code>) لتبقى مرن، وارجع للـ base class بس لو محتاج كود مشترك فعلاً.</p></div>
+<div class="box warn"><p><b class="t">5) <code>sizeof(T)</code> مع <code>struct</code>:</b> مش بتتكمبل (مش مضمون إن النوع unmanaged). استخدم <code>where T : unmanaged</code> مع <code>unsafe</code>، أو الأسهل <code>Unsafe.SizeOf&lt;T&gt;()</code>.</p></div>
+<p><b>الحديث:</b> من C# 11 تقدر تكتب <code>where T : INumber&lt;T&gt;</code> وتستخدم <code>+</code> و <code>*</code> مباشرة على T (Generic Math)، وده كان مستحيل قبلها بدون تكرار الكود. وفي C# 13 اتضاف <code>allows ref struct</code> كـ anti-constraint عشان تقبل <code>Span&lt;T&gt;</code> كـ type argument.</p>
+
+<h2 id="e">5) Variance: in و out (سلايد 25 إلى 29)</h2>
+<h3>السؤال</h3>
+<p>لو <code>Dog : Animal</code>، هل <code>X&lt;Dog&gt;</code> تنفع مكان <code>X&lt;Animal&gt;</code>؟ الإجابة بتعتمد على <b>اتجاه استخدام T</b> جوه X.</p>
+<div class="dg">
+<svg viewBox="0 0 740 235" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Variance diagram">
+<defs><marker id="ar" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse"><path class="op" d="M1 1L10 6L1 11"/></marker></defs>
+<text class="hd" x="20" y="18">Dog : Animal (Dog أخص)</text>
+<rect class="bx" x="20" y="30" width="210" height="42" rx="4"/><text class="hd" x="30" y="56">IEnumerable&lt;Dog&gt;</text>
+<rect class="bx" x="500" y="30" width="220" height="42" rx="4"/><text class="hd" x="510" y="56">IEnumerable&lt;Animal&gt;</text>
+<path class="ln" d="M230 51H500" marker-end="url(#ar)"/><text class="tx" x="262" y="44">covariant: out T  (نفس الاتجاه) ✓</text>
+<rect class="bx" x="20" y="100" width="210" height="42" rx="4"/><text class="hd" x="30" y="126">Action&lt;Animal&gt;</text>
+<rect class="bx" x="500" y="100" width="220" height="42" rx="4"/><text class="hd" x="510" y="126">Action&lt;Dog&gt;</text>
+<path class="ln" d="M230 121H500" marker-end="url(#ar)"/><text class="tx" x="258" y="114">contravariant: in T  (عكس الاتجاه) ✓</text>
+<rect class="bx" x="20" y="170" width="210" height="42" rx="4"/><text class="hd" x="30" y="196">List&lt;Dog&gt;</text>
+<rect class="bx" x="500" y="170" width="220" height="42" rx="4"/><text class="hd" x="510" y="196">List&lt;Animal&gt;</text>
+<path class="bad ds" d="M230 191H500"/><text class="badt" x="330" y="186">✗ invariant (T داخلة وخارجة)</text>
+</svg></div>
+<h3>ليه الاتجاه كده؟ (قاعدة بسيطة)</h3>
+<ul>
+<li><b>out (منتج):</b> الـ <code>IEnumerable&lt;Dog&gt;</code> بيطلع كلاب فقط. كل كلب هو Animal، فلو حد طلب "مصدر حيوانات" وأنا مديه "مصدر كلاب" مفيش مشكلة.</li>
+<li><b>in (مستهلك):</b> <code>Action&lt;Animal&gt;</code> قادر يتعامل مع أي حيوان، فبالتأكيد قادر يتعامل مع كلب. فلو حد طلب "معالج كلاب" وأنا مديه "معالج حيوانات" مفيش مشكلة.</li>
+<li><b>invariant (الاتنين):</b> <code>List&lt;T&gt;</code> بتقرأ وبتكتب. لو قبلت <code>List&lt;Dog&gt;</code> كـ <code>List&lt;Animal&gt;</code> حد يقدر يضيف Cat لقايمة كلاب.</li>
+</ul>
+<pre><code>// سلايد 27 و 28
+public interface IProducer&lt;out T&gt; { T Get(); }
+class DogProducer : IProducer&lt;Dog&gt; { public Dog Get() =&gt; new Dog { Name = "Buddy" }; }
+IProducer&lt;Animal&gt; animals = new DogProducer();        // covariance
+Console.WriteLine(animals.Get().Name);                  // Buddy
+
+// سلايد 25 و 26
+public interface IProcessor&lt;in T&gt; { void Process(T item); }
+class AnimalProcessor : IProcessor&lt;Animal&gt; { public void Process(Animal a) =&gt; Console.WriteLine($"Processing {a.Name}"); }
+IProcessor&lt;Dog&gt; dogs = new AnimalProcessor();         // contravariance
+dogs.Process(new Dog { Name = "Rex" });</code></pre>
+<h3>القواعد</h3>
+<ul>
+<li><code>out T</code> مسموح تظهر في <b>return فقط</b>. لو حطيتها كـ parameter: خطأ CS1961.</li>
+<li><code>in T</code> مسموح تظهر في <b>parameters فقط</b>.</li>
+<li>تنطبق على <b>interfaces و delegates فقط</b> (مش classes ولا structs).</li>
+<li>تنطبق على <b>reference types فقط</b>: <code>IEnumerable&lt;int&gt;</code> مش بتتحول لـ <code>IEnumerable&lt;object&gt;</code> لأن الـ int يحتاج boxing (تمثيل مختلف في الذاكرة).</li>
+<li>الأمثلة في الـ BCL: <code>IEnumerable&lt;out T&gt;</code>، <code>IReadOnlyList&lt;out T&gt;</code>، <code>Func&lt;in T, out TResult&gt;</code>، <code>Action&lt;in T&gt;</code>، <code>IComparer&lt;in T&gt;</code>، <code>IEqualityComparer&lt;in T&gt;</code>. لكن <code>List&lt;T&gt;</code> و <code>IList&lt;T&gt;</code> invariant.</li>
+</ul>
+<h3>تطبيق حقيقي</h3>
+<pre><code>void Feed(IEnumerable&lt;Animal&gt; animals) { }        // خذها بـ IEnumerable مش List
+Feed(new List&lt;Dog&gt;());                           // يشتغل بفضل covariance
+// void Feed(List&lt;Animal&gt; animals)  ← كان رفض List&lt;Dog&gt;
+
+class ByName : IComparer&lt;Animal&gt;
+{ public int Compare(Animal? a, Animal? b) =&gt; string.Compare(a?.Name, b?.Name); }
+var dogsList = new List&lt;Dog&gt;();
+dogsList.Sort(new ByName());                        // comparer للحيوانات بيرتّب كلاب (contravariance)</code></pre>
+<div class="box warn"><p><b class="t">الأصل التاريخي لباگ:</b> المصفوفات covariant من أول نسخة (قرار قديم غير آمن): <code>object[] a = new string[1]; a[0] = 5;</code> بتتكمبل وبترمي <code>ArrayTypeMismatchException</code> وقت التشغيل، وكل كتابة في array بتعمل فحص نوع إضافي. الـ generics اتصممت بحيث تتجنب ده.</p></div>
+<p><b>إمتى تحتاج تكتب variant interface بنفسك؟</b> لما تعمل handlers و validators و producers عامة (<code>IHandler&lt;in TMessage&gt;</code>، <code>IValidator&lt;in T&gt;</code>، <code>IReader&lt;out T&gt;</code>) وعايز تسجل handler واحد عام لأنواع أخص.</p>
+
+<h2 id="f">6) Generic Inheritance (سلايد 30 إلى 33)</h2>
+<div class="dg">
+<svg viewBox="0 0 740 250" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Generic inheritance diagram">
+<defs><marker id="tri" markerWidth="12" markerHeight="12" refX="11" refY="6" orient="auto" markerUnits="userSpaceOnUse"><path class="mk" d="M1 1L11 6L1 11Z"/></marker></defs>
+<rect class="bx" x="20" y="15" width="290" height="50" rx="4"/><text class="hd" x="30" y="35">Entity&lt;TId&gt;</text><text class="tx" x="30" y="53">+ TId Id</text>
+<rect class="bx" x="20" y="100" width="290" height="50" rx="4"/><text class="hd" x="30" y="120">AuditableEntity&lt;TId&gt; : Entity&lt;TId&gt;</text><text class="tx" x="30" y="138">+ DateTime CreatedAt</text>
+<rect class="bx" x="20" y="185" width="290" height="50" rx="4"/><text class="hd" x="30" y="205">User : AuditableEntity&lt;int&gt;</text><text class="tx" x="30" y="223">closed: TId = int</text>
+<path class="ln" d="M165 100V65" marker-end="url(#tri)"/><path class="ln" d="M165 185V150" marker-end="url(#tri)"/>
+<rect class="bx" x="400" y="15" width="320" height="50" rx="4" stroke-dasharray="5 3"/><text class="hd" x="410" y="35">IRepository&lt;TEntity&gt;</text><text class="tx" x="410" y="53">Add / GetById</text>
+<rect class="bx" x="400" y="100" width="320" height="50" rx="4" stroke-dasharray="5 3"/><text class="hd" x="410" y="120">IAuditableRepository&lt;TEntity&gt;</text><text class="tx" x="410" y="138">: IRepository&lt;TEntity&gt;  + Update</text>
+<rect class="bx" x="400" y="185" width="320" height="50" rx="4"/><text class="hd" x="410" y="205">UserRepository</text><text class="tx" x="410" y="223">: IAuditableRepository&lt;User&gt;</text>
+<path class="ln" d="M560 100V65" marker-end="url(#tri)"/><path class="ln ds" d="M560 185V150" marker-end="url(#tri)"/>
+</svg></div>
+<h3>الأشكال التلاتة</h3>
+<pre><code>class A&lt;T&gt; { public T Value { get; set; } = default!; }
+
+class B : A&lt;int&gt; { }                  // 1) closed: النوع ثابت
+class C&lt;T&gt; : A&lt;T&gt; { }                // 2) open pass-through: النوع بيتمرر (سلايد 31)
+class D&lt;T&gt; : A&lt;List&lt;T&gt;&gt; { }          // 3) النوع مشتق منه</code></pre>
+<h3>مشاكل حقيقية</h3>
+<div class="box warn"><p><b class="t">1) <code>A&lt;int&gt;</code> و <code>A&lt;string&gt;</code> مالهمش أب مشترك:</b> مينفعش تحطهم في <code>List&lt;A&lt;?&gt;&gt;</code> ومينفعش <code>void F(A&lt;object&gt; a)</code> تقبل <code>A&lt;string&gt;</code>. الحل: interface أو base class غير generic (<code>IEntity</code>) فوقهم.</p></div>
+<div class="box warn"><p><b class="t">2) كل closed base ليه static خاص:</b> <code>B</code> و <code>C&lt;int&gt;</code> يشاركوا <code>A&lt;int&gt;</code>، لكن <code>C&lt;string&gt;</code> لأ.</p></div>
+<div class="box warn"><p><b class="t">3) عمق الـ hierarchy:</b> 3 مستويات generic (<code>Entity&lt;TId&gt;</code> ثم <code>AuditableEntity&lt;TId&gt;</code> ثم <code>SoftDeletable&lt;TId&gt;</code>) بتصعّب القراءة وأخطاء الـ compiler. فضّل composition أو interfaces صغيرة (<code>IAuditable</code> و <code>ISoftDeletable</code>) على سلسلة وراثة طويلة.</p></div>
+<h3>نمط متقدم: Self-referencing constraint (Fluent Builder)</h3>
+<pre><code>public abstract class Builder&lt;TSelf&gt; where TSelf : Builder&lt;TSelf&gt;
+{
+    protected string _name = "";
+    public TSelf Name(string n) { _name = n; return (TSelf)this; }   // يرجع النوع الأخص
+}
+public class PizzaBuilder : Builder&lt;PizzaBuilder&gt;
+{
+    private bool _cheese;
+    public PizzaBuilder Cheese() { _cheese = true; return this; }
+    public string Build() =&gt; $"{_name} cheese={_cheese}";
+}
+Console.WriteLine(new PizzaBuilder().Name("Margherita").Cheese().Build());   // Name بترجع PizzaBuilder فنقدر نكمل Cheese()</code></pre>
+<p>من غير <code>TSelf</code> كانت <code>Name()</code> هترجع <code>Builder</code> الأساسي وتضيع عليك <code>Cheese()</code> في السلسلة. نفس الفكرة وراء <code>IComparable&lt;T&gt;</code> و <code>INumber&lt;T&gt;</code>.</p>
+
+<footer>الجزء 3: حل أسئلة Quick Think والتصحيحات والمراجع من Medium وغيره. الأمثلة من فهمي ولم أشغلها هنا.</footer>
+</main>
+</body>
+</html>

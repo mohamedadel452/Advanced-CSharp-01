@@ -1,3 +1,9 @@
 <Solution>
+  <Folder Name="/Solution Items/">
+    <File Path="README.md" />
+    <File Path="Study_Guide/Generics_Deep_Part1_Core.html" />
+    <File Path="Study_Guide/Generics_Deep_Part2_Constraints_Variance.html" />
+    <File Path="Study_Guide/Generics_Deep_Part3_Quiz_Refs.html" />
+  </Folder>
   <Project Path="Advanced-CSharp-01/Advanced-CSharp-01.csproj" />
 </Solution>

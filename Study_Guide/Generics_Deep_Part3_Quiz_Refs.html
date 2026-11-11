@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Generics (3/3): حل الأسئلة والتصحيحات والمراجع والتمرين</title>
+<style>
+:root{--bg:#f6f7f4;--fg:#1d2327;--mut:#5b6670;--card:#fff;--line:#d9ded8;--acc:#0b6b5c;--warn:#a4440f;--warnbg:#fdf0e6;--code:#10201c;--codefg:#d7efe6;--okbg:#e6f4ef}
+@media(prefers-color-scheme:dark){:root{--bg:#121816;--fg:#e4ebe8;--mut:#9aa8a3;--card:#1a2320;--line:#2c3834;--acc:#4fc2a8;--warn:#f0a066;--warnbg:#2b2118;--code:#0b1210;--okbg:#17302a}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:17px/1.9 "Segoe UI",Tahoma,"Noto Naskh Arabic",system-ui,sans-serif;padding:env(safe-area-inset-top,0) 0 env(safe-area-inset-bottom,0)}
+main{max-width:900px;margin:0 auto;padding:28px 18px 80px}
+h1{font-size:1.9rem;line-height:1.4;margin:.2em 0}
+h2{font-size:1.4rem;margin:2.2em 0 .5em;padding-inline-start:12px;border-inline-start:5px solid var(--acc)}
+h3{font-size:1.05rem;margin:1.5em 0 .2em;color:var(--acc)}
+p{margin:.55em 0}.lead{color:var(--mut)}a{color:var(--acc)}
+nav{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}
+nav a{color:var(--fg);text-decoration:none;border:1px solid var(--line);background:var(--card);padding:3px 12px;border-radius:6px;font-size:.88rem}
+pre{direction:ltr;text-align:left;background:var(--code);color:var(--codefg);padding:13px 16px;border-radius:8px;overflow-x:auto;font:13.5px/1.55 Consolas,Menlo,monospace;margin:.6em 0}
+code{direction:ltr;unicode-bidi:embed;font-family:Consolas,Menlo,monospace;font-size:.9em;background:var(--okbg);padding:1px 6px;border-radius:4px}
+pre code{background:none;padding:0;font-size:inherit}
+.box{border:1px solid var(--line);background:var(--card);border-radius:8px;padding:4px 16px;margin:1em 0}
+.ok{background:var(--okbg);border-color:var(--acc)}
+.tw{overflow-x:auto;margin:1em 0}
+table{border-collapse:collapse;width:100%;min-width:560px;background:var(--card)}
+th,td{border:1px solid var(--line);padding:7px 12px;text-align:start;vertical-align:top;font-size:.93rem}
+th{background:var(--okbg)}
+td.n{width:2.6em;text-align:center;font-weight:700}
+li{margin:.3em 0}
+footer{margin-top:3em;color:var(--mut);font-size:.9rem}
+</style>
+</head>
+<body>
+<main>
+<h1>Generics (الجزء 3 من 3): حل الأسئلة والتصحيحات والمراجع</h1>
+<p class="lead">السلايدات فيها أسئلة Quick Think (سلايد 11 و 12 و 29 و 34) بإجابات مختصرة، وبعضها فيه أخطاء. هنا الحل المفصل، وبعدها تدريب إضافي وأسئلة مقابلات ومراجع وتمرين.</p>
+<nav><a href="#q">1. حل الأسئلة</a><a href="#c">2. تصحيحات</a><a href="#p">3. تدريب إضافي</a><a href="#i">4. مقابلات</a><a href="#r">5. مراجع</a><a href="#x">6. تمرين</a></nav>
+
+<h2 id="q">1) حل أسئلة Quick Think</h2>
+<div class="tw"><table>
+<tr><th>السلايد</th><th>الإجابة الصحيحة</th><th>التفسير</th></tr>
+<tr><td class="n">11 س1</td><td><b>A</b> (10 ثم Hello)</td><td><code>Box&lt;int&gt;</code> و <code>Box&lt;string&gt;</code> نوعين مختلفين من نفس القالب، وكل <code>WriteLine</code> في سطر. السلايد صح.</td></tr>
+<tr><td class="n">11 س2</td><td><b>C</b> يتكمبل</td><td><code>Pair&lt;T,U&gt;</code> بدون constructor يعني default constructor ضمني، فالـ <code>new Pair&lt;string,int&gt;()</code> مقبولة. الأنواع ممكن تكون أي تركيبة وبأي ترتيب. السلايد صح.</td></tr>
+<tr><td class="n">12 س1</td><td><b>C</b> (100 ثم C# في سطرين)</td><td>الإجابة المكتوبة في السلايد A معروضة على سطر واحد (<code>100 C#</code>) بينما <code>WriteLine</code> بتطبع سطرين. مشكلة صياغة في الاختيارات.</td></tr>
+<tr><td class="n">12 س2</td><td><b>C</b> يتكمبل (بشرط)</td><td>الكود فيه <code>Util.Echo&lt;int&gt;(S)</code> وده على الأغلب خطأ طباعة (المقصود رقم مثل <code>5</code>). لو اتصحح: النوع محدد صراحة والدالة بترجع نفس النوع.</td></tr>
+<tr><td class="n">29 س1</td><td><b>لا يتكمبل</b></td><td><b>السلايد غلط:</b> <code>sizeof(T)</code> مع <code>where T : struct</code> بيدي خطأ لأن الـ compiler مش عارف إن T unmanaged. السلايد قال "4 و 2". الصح استخدام <code>Unsafe.SizeOf&lt;T&gt;()</code> وبيرجع 4 للـ int و 2 للـ char.</td></tr>
+<tr><td class="n">29 س2</td><td><b>String ثم MyClass</b></td><td><code>value.GetType().Name</code> بترجع اسم الـ runtime type. <code>"Hello"</code> هو <code>String</code>. والسطر المعلّق بـ struct هيدي خطأ CS0452.</td></tr>
+<tr><td class="n">29 س3</td><td><b>Printing document</b></td><td><code>Document</code> بينفذ <code>IPrintable</code> فمقبول، و<code>DoPrint(123)</code> مرفوضة (int مش IPrintable).</td></tr>
+<tr><td class="n">34</td><td><b>C</b> (2)</td><td>صح، لكن السؤال (static counter) مش من موضوع الـ Generics، منقول من جلسة الـ Static.</td></tr>
+</table></div>
+<pre><code>// تأكيد إجابة سلايد 29 س1 بالطريقة الصحيحة
+static void PrintSize&lt;T&gt;(T value) where T : struct =&gt; Console.WriteLine(Unsafe.SizeOf&lt;T&gt;());
+PrintSize(10);     // 4
+PrintSize('A');    // 2
+// using System.Runtime.CompilerServices;</code></pre>
+
+<h2 id="c">2) تصحيحات وملاحظات على السلايدات</h2>
+<div class="box ok"><ol>
+<li><b>سلايد 29 س1:</b> الإجابة غلط (القسم 1).</li>
+<li><b>سلايد 12:</b> اختيارات سؤال 1 مختلفة في عدد الأسطر، وسؤال 2 فيه <code>(S)</code> بدل رقم.</li>
+<li><b>سلايد 2:</b> الـ Agenda بتاعة جلسة تانية (Object Copying و Static و Extension و Partial).</li>
+<li><b>سلايد 34:</b> سؤال Static خارج الموضوع.</li>
+<li><b>سلايد 5:</b> "Better Performance" بتخص الـ value types فقط (الجزء 1 قسم 2).</li>
+<li><b>سلايد 22 و 24:</b> القيد <code>where T : IPrintable</code> بيقبل structs كمان، والاستدعاء بيبقى من غير boxing بفضل الـ constrained call (الجزء 2 قسم 4).</li>
+<li><b>سلايد 25 و 27:</b> بيقول "T can be used as method parameter / return type"، لكن ما بيذكرش إن <code>out</code> و <code>ref</code> parameters تعتبر invariant: <code>interface IX&lt;out T&gt; { bool TryGet(out T v); }</code> مرفوضة.</li>
+<li>مفيش أمثلة على المشاكل الواقعية (static لكل نوع، boxing الخفي، فخ <code>Func</code> مقابل Expression)، وده اللي غطيته في الأجزاء.</li>
+</ol></div>
+
+<h2 id="p">3) تدريب إضافي (8 أسئلة بفخاخ)</h2>
+<p>جرّب تجاوب قبل ما تفتح الإجابات تحت.</p>
+<pre><code>// 1) هل يتكمبل؟
+IEnumerable&lt;Animal&gt; a = new List&lt;Dog&gt;();
+// 2) هل يتكمبل؟
+List&lt;Animal&gt; b = new List&lt;Dog&gt;();
+// 3) ناتج السطر؟
+class Counter&lt;T&gt; { public static int N; }
+Counter&lt;int&gt;.N = 5;  Console.WriteLine(Counter&lt;long&gt;.N);
+// 4) هل يتكمبل؟
+static T Make&lt;T&gt;() where T : class =&gt; new T();
+// 5) ناتج؟
+static T Def&lt;T&gt;() =&gt; default!;   Console.WriteLine(Def&lt;string&gt;() is null);   Console.WriteLine(Def&lt;int&gt;());
+// 6) هل يتكمبل؟
+static bool Same&lt;T&gt;(T a, T b) =&gt; a == b;
+// 7) هل يتكمبل؟
+class Base&lt;T&gt; where T : struct { }   class Derived&lt;T&gt; : Base&lt;T&gt; { }
+// 8) هل يتكمبل؟
+IEnumerable&lt;object&gt; o = new List&lt;int&gt;();</code></pre>
+<div class="tw"><table>
+<tr><th>#</th><th>الإجابة</th><th>السبب</th></tr>
+<tr><td class="n">1</td><td>يتكمبل</td><td><code>IEnumerable&lt;out T&gt;</code> covariant.</td></tr>
+<tr><td class="n">2</td><td>لا</td><td><code>List&lt;T&gt;</code> invariant (class).</td></tr>
+<tr><td class="n">3</td><td>0</td><td>static لكل closed type.</td></tr>
+<tr><td class="n">4</td><td>لا</td><td><code>new T()</code> محتاجة <code>new()</code> constraint، و<code>class</code> لا تضمن ctor.</td></tr>
+<tr><td class="n">5</td><td>True ثم 0</td><td><code>default</code> للـ reference = null وللـ int = 0.</td></tr>
+<tr><td class="n">6</td><td>لا</td><td>من غير constraint مفيش <code>==</code> على T غير المقيدة (CS0019).</td></tr>
+<tr><td class="n">7</td><td>لا</td><td>الـ Derived لازم يكرر <code>where T : struct</code> (CS0453).</td></tr>
+<tr><td class="n">8</td><td>لا</td><td>الـ variance مع reference types فقط، والـ int محتاج boxing.</td></tr>
+</table></div>
+
+<h2 id="i">4) أسئلة مقابلات شائعة</h2>
+<div class="tw"><table>
+<tr><th>السؤال</th><th>إجابة تظهر العمق</th></tr>
+<tr><td>الفرق بين generics في C# و Java؟</td><td>C# reified (النوع موجود وقت التشغيل ولا boxing للـ value types)، وJava بتمسح النوع (erasure).</td></tr>
+<tr><td>إزاي الـ CLR بيتعامل مع <code>List&lt;int&gt;</code> و <code>List&lt;string&gt;</code>؟</td><td>الـ value types ليها كود JIT خاص، والـ reference types بتتشارك كود واحد.</td></tr>
+<tr><td>ليه ما ينفعش <code>new T()</code> من غير constraint؟</td><td>مفيش ضمان إن T فيها constructor بدون parameters.</td></tr>
+<tr><td>الفرق بين <code>class</code> و <code>new()</code>؟</td><td><code>class</code> يعني reference type (ممكن من غير default ctor)، و<code>new()</code> بتضمن الـ constructor (وتقبل structs).</td></tr>
+<tr><td>ليه <code>List&lt;Dog&gt;</code> مش <code>List&lt;Animal&gt;</code>؟</td><td>لأنها invariant، لو اتسمح كان تقدر تضيف Cat.</td></tr>
+<tr><td>إمتى نستخدم <code>out</code> و <code>in</code>؟</td><td><code>out</code> لما T بتطلع فقط (producer)، <code>in</code> لما بتدخل فقط (consumer).</td></tr>
+<tr><td>ليه variance مش بتشتغل مع int؟</td><td>التمثيل في الذاكرة مختلف (محتاج boxing)، فمش مجرد تحويل مرجع.</td></tr>
+<tr><td>إيه خطر static في generic class؟</td><td>نسخة لكل closed type فممكن تتخيل إنها مشتركة وهي لأ.</td></tr>
+<tr><td>إزاي تتجنب boxing مع struct في generic؟</td><td>constraint بـ interface مع constrained call، و<code>IEquatable&lt;T&gt;</code> للـ keys.</td></tr>
+<tr><td>إيه الـ generic math؟</td><td><code>static abstract</code> في interfaces و <code>INumber&lt;T&gt;</code> بيسمحوا بـ <code>+</code> و <code>*</code> على T.</td></tr>
+</table></div>
+
+<h2 id="r">5) مراجع للتوسع</h2>
+<p>الملخصات دي بكلامي من اللي ظهر لي في البحث، وبعض الصفحات (زي مقالات Medium للأعضاء) مقدرتش أقراها كاملة، فراجعها بنفسك قبل ما تعتمد على أي تفصيلة.</p>
+<ul>
+<li><a href="https://medium.com/@saraf.vikas5/mastering-generics-in-c-7aeab74e53e6" target="_blank" rel="noopener">Mastering Generics in C#: A Deep Dive with Real-World Scenarios</a> (Medium، للأعضاء): بيعرض ثلاث مزايا (type safety، الأداء بتجنب boxing، إعادة الاستخدام) في أمثلة واقعية. قريت المقدمة فقط.</li>
+<li><a href="https://levelup.gitconnected.com/c-boxing-a-hidden-performance-enemy-defeat-it-now-b0b35cf682e9" target="_blank" rel="noopener">C# Boxing: A Hidden Performance Enemy</a> (Level Up Coding على Medium): بيربط بين <code>ArrayList</code> والـ boxing وإزاي الـ generics تحافظ على الـ value types من غير تغليف.</li>
+<li><a href="https://blog.ndepend.com/boxing-in-c-what-it-costs-you-and-how-to-get-rid-of-it" target="_blank" rel="noopener">Boxing in C#: what it costs and how to get rid of it</a> (NDepend): بيقارن بين generics في .NET وJava، وبيوضح مثال Generic Math بدون boxing.</li>
+<li><a href="https://codemia.io/knowledge-hub/path/boxing_and_unboxing_with_generics" target="_blank" rel="noopener">Boxing and unboxing with generics</a> (Codemia): بيحدد حالات بيحصل فيها boxing حتى مع الـ generics، زي استدعاء أعضاء object على T غير مقيدة.</li>
+<li><a href="https://learn.microsoft.com/en-us/Dotnet/csharp/fundamentals/types/generics" target="_blank" rel="noopener">Generics: Microsoft Learn</a>: المقارنة بـ Java وC++، والـ constraints، وأمثلة variance (<code>IEnumerable&lt;out T&gt;</code> و <code>Action&lt;in T&gt;</code>).</li>
+<li><a href="https://code-maze.com/?p=116263" target="_blank" rel="noopener">Invariance, Covariance and Contravariance in C# generics</a> (Code Maze): شرح <code>&lt;in T&gt;</code> و <code>&lt;out T&gt;</code> مع مثال producer بقيد <code>new()</code>.</li>
+<li><a href="https://www.codecademy.com/learn/learn-intermediate-c-sharp/modules/c-sharp-generics/cheatsheet" target="_blank" rel="noopener">C# Generics cheatsheet</a> (Codecademy): بيذكر قواعد الدمج، <code>struct</code> و <code>class</code> أول، و<code>struct</code> مع <code>new()</code> مينفعوش مع بعض.</li>
+<li><a href="https://www.bytehide.com/blog/csharp-generics-interview-questions" target="_blank" rel="noopener">C# Generics interview questions</a> (ByteHide): أسئلة مقابلات على الـ variance والـ constraints.</li>
+</ul>
+
+<h2 id="x">6) تمرين: Generic Cache بالـ Constraints والـ Variance</h2>
+<pre><code>using System.Collections.Concurrent;
+
+public class MemoryCache&lt;TKey, TValue&gt; where TKey : notnull
+{
+    private readonly ConcurrentDictionary&lt;TKey, (TValue Value, DateTime Expires)&gt; _d = new();
+    private readonly TimeSpan _ttl;
+    public MemoryCache(TimeSpan ttl) =&gt; _ttl = ttl;
+
+    public TValue GetOrAdd(TKey key, Func&lt;TKey, TValue&gt; factory)
+    {
+        if (_d.TryGetValue(key, out var e) &amp;&amp; e.Expires &gt; DateTime.UtcNow) return e.Value;
+        var v = factory(key);
+        _d[key] = (v, DateTime.UtcNow + _ttl);
+        return v;
+    }
+}
+
+var cache = new MemoryCache&lt;int, string&gt;(TimeSpan.FromSeconds(30));
+Console.WriteLine(cache.GetOrAdd(1, id =&gt; $"user-{id}"));   // user-1 (من الـ factory)
+Console.WriteLine(cache.GetOrAdd(1, id =&gt; "other"));         // user-1 (من الـ cache)</code></pre>
+<p><b>مطلوب منك:</b></p>
+<ol>
+<li>اعمل <code>GetOrAddAsync(TKey, Func&lt;TKey, Task&lt;TValue&gt;&gt;)</code> وامنع تنفيذ الـ factory مرتين لنفس الـ key في نفس الوقت (فكّر في <code>Lazy&lt;Task&lt;TValue&gt;&gt;</code>). الكود الحالي فيه race: مين يعمل factory مرتين؟</li>
+<li>اعمل <code>static class CacheStats&lt;TKey,TValue&gt;</code> بـ <code>Hits</code> و <code>Misses</code>، واشرح ليه الأرقام منفصلة لكل تركيبة نوع.</li>
+<li>اعمل struct key (<code>record struct OrderKey(int Id, int Tenant)</code>) وتأكد إن الـ cache بيشتغل من غير boxing (قارن مع struct عادي من غير <code>IEquatable</code>).</li>
+<li>اكتب <code>interface IReadCache&lt;out TValue&gt; { TValue? Get(object key); }</code> وجرّب تضيف <code>bool TryGet(object key, out TValue v)</code> (هتتكسر، ليه؟ <code>out</code> parameter invariant).</li>
+<li>اكتب اختبار يثبت إن <code>IReadCache&lt;Dog&gt;</code> تتحول لـ <code>IReadCache&lt;Animal&gt;</code>.</li>
+<li>سجّل <code>MemoryCache&lt;,&gt;</code> كـ open generic في DI وخدها في خدمتين بتركيبات مختلفة.</li>
+</ol>
+<footer>الأجزاء: Part1 (الأساس) و Part2 (Constraints و Variance و Inheritance) و Part3 (الحل والمراجع). الكود من فهمي ولم أشغله هنا، فجرّبه عندك.</footer>
+</main>
+</body>
+</html>
